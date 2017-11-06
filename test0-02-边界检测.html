@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>边界检测</title>
+    <script src="js/jquery-1.8.3.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+    </style>
+
+</head>
+<body>
+<canvas id="background" width="600" height="500">
+    Your browser does not support canvas. Please try again with a different browser.
+</canvas>
+<canvas id="me" width="600" height="500">
+
+</canvas>
+<canvas id="hb" width="600" height="500">
+
+</canvas>
+<p></p>
+<script>
+    var canvas = document.getElementById("background");
+    var context2D = canvas.getContext("2d");
+    var pic = new Image();
+    pic.src = "imgs/background.png";
+    //注意目录结构，这里是把图片和html放在一个目录的
+    //注意下面方法中画笔状态的保护，这在很多情况下都会使用到
+    var x=0,i=5;
+    function draw(c) {
+        context2D.clearRect(0, 0, 600, 500);
+        context2D.save(); //保存画笔状态
+        context2D.translate(0,5*x); //开始移动画笔
+        for(var i=0;i<c;i++){
+            context2D.drawImage(pic, 0, -500*i);
+        }
+//        context2D.drawImage(pic, 0, -700*c);
+//        context2D.drawImage(pic, 0, -450*(c));
+        x++;
+        context2D.restore(); //绘制结束以后，恢复画笔状态
+    }
+    setInterval(function () {
+        i++
+    }, 1000);
+    setInterval(function () {
+        draw(i);
+    }, 50);
+    var canvasme = document.getElementById("me");
+    var contextme2D = canvasme.getContext("2d");
+    var me = new Image();
+    me.src = "imgs/my.gif";
+    var y=0;
+    function draw2() {
+        contextme2D.clearRect(0, 0, 600, 500);
+        contextme2D.save(); //保存画笔状态
+        contextme2D.translate(0,0); //开始移动画笔
+        contextme2D.drawImage(me, 0,0,40,46,hero.x,hero.y,40,46);
+        contextme2D.restore(); //绘制结束以后，恢复画笔状态
+        y++;
+    }
+    var hero = {
+        speed: 4, // 每秒移动的像素
+        x: 300,//初始x坐标
+        y: 450//初始y坐标
+    };
+    function Go() {
+        update(isCollsionWithTRBL(hero.x,hero.y,40,46,0,600,500,0));
+        draw2();//重绘屏幕
+    }
+
+    setInterval(Go, 20);
+    var keysDown = {};
+
+    addEventListener("keydown", function (e) {
+        keysDown[e.keyCode] = true;
+    }, false);
+
+    addEventListener("keyup", function (e) {
+        delete keysDown[e.keyCode];
+    }, false);
+
+    var cvsheroball = document.getElementById("hb");
+    var contexthb2D = cvsheroball.getContext("2d");
+
+    function update(c) {
+        if (c!=1&&38 in keysDown) { // 用户按的是↑
+            hero.y -= hero.speed;
+        }
+        if (c!=3&&40 in keysDown) { // 用户按的是↓
+            hero.y += hero.speed;
+        }
+        if (c!=4&&37 in keysDown) { // 用户按的是←
+            hero.x -= hero.speed;
+        }
+        if (c!=2&&39 in keysDown) { // 用户按的是→
+            hero.x += hero.speed;
+        }
+        if (17 in keysDown) { // 用户按的是ctrl
+           var x=hero.x;var y=hero.y;
+            var hb = new Image();
+            hb.src = "imgs/missileH_U.gif";
+            var btime=0;
+            setInterval(function(){
+                hbGo(x,y,hb);
+            },20);
+            function draw3(x,y,hb) {
+                contexthb2D.clearRect(0, 0, 600, 500);
+                contexthb2D.save(); //保存画笔状态
+                contexthb2D.translate(0,-10*btime); //开始移动画笔
+                contexthb2D.drawImage(hb, 0,0,40,46,x,y,40,46);
+                contexthb2D.restore(); //绘制结束以后，恢复画笔状态
+                btime++;
+            }
+            function hbGo(x,y,hb) {
+                draw3(x,y,hb);
+            }
+
+        }
+    }
+
+    function isCollsionWithTRBL(x, y, width, height, top, right, bottom, left) {
+        if (x <=left) {
+            return 4;
+        } else if (y<=top) {
+            return 1;
+        } else if (x+width>=right) {
+            return 2;
+        } else if (y+height>bottom) {
+            return 3;
+        }
+        return 0;
+    }
+    function isCollsionWithRect(x1, y1, w1, h1, x2, y2, w2, h2) {
+        // 矩形A位于矩形B的右侧
+        if (x1 >= x2 && x1 >= x2 + w2) {
+            return false;
+            // 矩形A位于矩形B的左侧
+        } else if (x1 <= x2 && x1 + w1 <= x2) {
+            return false;
+            // 矩形A位于矩形B的下侧
+        } else if (y1 >= y2 && y1 >= y2 + h2) {
+            return false;
+            // 矩形A位于矩形B的上侧
+        } else if (y1 <= y2 && y1 + h1 <= y2) {
+            return false;
+        }
+        // 不相交都不满足，那就是相交了
+        return true;
+    }
+
+
+
+
+</script>
+</body>
+</html>

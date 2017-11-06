@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>打靶</title>
+    <script src="js/jquery-1.8.3.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+    </style>
+
+</head>
+<body>
+<canvas id="background" width="600" height="700">
+    Your browser does not support canvas. Please try again with a different browser.
+</canvas>
+<canvas id="me" width="600" height="700">
+
+</canvas>
+<canvas id="hb" width="600" height="700">
+
+</canvas>
+<p></p>
+<script>
+    var canvas = document.getElementById("background");
+    var context2D = canvas.getContext("2d");
+    var canvasme = document.getElementById("me");
+    var contextme2D = canvasme.getContext("2d");
+    var cvsheroball = document.getElementById("hb");
+    var contexthb2D = cvsheroball.getContext("2d");
+    var pic = new Image();
+    pic.src = "imgs/background.png";
+    var x=0,i=5;var timer=[];
+    function draw(c) {
+        context2D.clearRect(0, 0, 600, 700);
+        context2D.save();
+        context2D.translate(0,5*x);
+        for(var i=0;i<c;i++){
+            context2D.drawImage(pic, 0, -500*i);
+        }
+        x++;
+        context2D.restore();
+    }
+    setInterval(function () {i++}, 1000);
+    setInterval(function () {draw(i);}, 50);
+    var me = new Image();
+    me.src = "imgs/my.gif";
+    var boss = new Image();
+    boss.src = "imgs/enemyBoss.gif";
+    var y=0;
+    function draw2() {
+        contextme2D.clearRect(0, 0, 600, 700);
+        contextme2D.save(); //保存画笔状态
+        contextme2D.translate(0,0); //开始移动画笔
+        contextme2D.drawImage(me, 0,0,40,46,hero.x,hero.y,40,46);
+        if(dragon.isLive){
+            contextme2D.drawImage(boss, 0,0,163,154,dragon.x,dragon.y,163,154);
+        }
+        contextme2D.restore(); //绘制结束以后，恢复画笔状态
+        y++;
+    }
+    var dragon={
+        x:200,
+        y:50,
+        hp:500,
+        isLive:true,
+    };
+    var hero = {
+        speed: 4, // 每秒移动的像素
+        x: 300,//初始x坐标
+        y: 650,//初始y坐标
+        direct:0,
+        shotEnemy:function(){
+
+        switch(this.direct){
+            case 0:
+                var heroBullet0=new Bullet(this.x+4.5,this.y,this.direct,8);
+                    heroBullet.push(heroBullet0);
+                var c=heroBullet[heroBullet.length-1];
+
+                var timer0=setInterval(function () {
+                    c.run();
+                },30);
+                timer.push(timer0);
+                heroBullet[heroBullet.length-1].timer=timer[timer.length-1];
+                var heroBullet1=new Bullet(this.x-9,this.y,1,8);
+                heroBullet.push(heroBullet1);
+                var d=heroBullet[heroBullet.length-1];
+
+                timer0=setInterval(function () {
+                    d.run();
+                },30);
+                timer.push(timer0);
+                heroBullet[heroBullet.length-1].timer=timer[timer.length-1];
+                var heroBullet2=new Bullet(this.x+12,this.y,2,8);
+                heroBullet.push(heroBullet2);
+                var e=heroBullet[heroBullet.length-1];
+
+                timer0=setInterval(function () {
+                    e.run();
+                },30);
+                timer.push(timer0);
+                heroBullet[heroBullet.length-1].timer=timer[timer.length-1];
+                break;
+            case 3: //右
+                var heroBullet3=new Bullet(this.x,this.y+100,this.direct,8);
+                break;
+        }
+
+    }
+    };
+    function Go() {
+        update(isCollsionWithTRBL(hero.x,hero.y,40,46,0,600,700,0));
+        draw2();//重绘屏幕
+    }
+    setInterval(Go, 20);
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+        keysDown[e.keyCode] = true;
+    }, false);
+    addEventListener("keyup", function (e) {
+        delete keysDown[e.keyCode];
+    }, false);
+
+    function update(c) {
+        if (c!=1&&38 in keysDown) { // 用户按的是↑
+            hero.y -= hero.speed;
+        }
+        if (c!=3&&40 in keysDown) { // 用户按的是↓
+            hero.y += hero.speed;
+        }
+        if (c!=4&&37 in keysDown) { // 用户按的是←
+            hero.x -= hero.speed;
+        }
+        if (c!=2&&39 in keysDown) { // 用户按的是→
+            hero.x += hero.speed;
+        }
+
+    }
+    $(function () {
+        setInterval(flashTankMap,20);
+    });
+    var shottime=0;
+    $(document).keydown(function(event){
+        if(event.keyCode == 17){
+            hero.shotEnemy();
+        }
+    });
+
+    function flashTankMap(){
+        //把画布清理
+        contexthb2D.clearRect(0,0,600,700);
+        //画出自己的子弹
+        drawHeroBullet();
+        if(dragon.hp<=0)dragon.isLive=false;
+    }
+    var heroBullet=[];
+    function Bullet(x,y,direct,speed){
+        this.x=x;
+        this.y=y;
+        this.direct=direct;
+        this.speed=speed;
+        this.timer=null;
+        this.isLive=true;
+        this.run=function run(){
+            //在该表这个子弹的坐标时，我们先判断子弹是否已经到边界
+            if(this.x<=0||this.x>=600||this.y<=0||this.y>=700){
+                //子弹要停止.
+                window.clearInterval(this.timer);
+                //子弹死亡
+                this.isLive=false;
+            }else{
+                //这个可以去修改坐标
+                switch(this.direct){
+                    case 0:
+                        this.y-=this.speed;
+                        break;
+                    case 1:
+                        this.y-=this.speed;
+                        this.x-=0.5*this.speed;
+                        break;
+                    case 2:
+                        this.y-=this.speed;
+                        this.x+=0.5*this.speed;
+                        break;
+                    case 3:
+                        this.x-=this.speed;
+                        break;
+                }
+            }
+        }
+    }
+    var hb = new Image();
+    hb.src = "imgs/missileH_U.gif";
+    var hb1 = new Image();
+    hb1.src = "imgs/missileH_LUU.gif";
+    var hb2 = new Image();
+    hb2.src = "imgs/missileH_RUU.gif";
+    function drawHeroBullet(){
+        {
+            for(var i=0;i<heroBullet.length;i++){
+                if(dragon.isLive&&isCollsionWithRect(heroBullet[i].x,heroBullet[i].y,29,28,dragon.x,dragon.y,163,154))
+                {
+                    heroBullet[i].isLive=false;dragon.hp-=20;
+                }
+                if(heroBullet[i].isLive==true&&heroBullet[i].direct==0)
+                {
+                    contexthb2D.drawImage(hb,heroBullet[i].x,heroBullet[i].y);
+                }
+                else if(heroBullet[i].isLive==true&&heroBullet[i].direct==1)
+                {
+                    contexthb2D.drawImage(hb1,heroBullet[i].x,heroBullet[i].y);
+                }
+                else if(heroBullet[i].isLive==true&&heroBullet[i].direct==2)
+                {
+                    contexthb2D.drawImage(hb2,heroBullet[i].x,heroBullet[i].y);
+                }
+                else
+                {
+                    heroBullet.splice(i,1);
+                    timer.splice(i,1);
+                }
+            }
+
+        }
+
+    }
+    function isCollsionWithTRBL(x, y, width, height, top, right, bottom, left) {
+        if (x <=left) {
+            return 4;
+        } else if (y<=top) {
+            return 1;
+        } else if (x+width>=right) {
+            return 2;
+        } else if (y+height>bottom) {
+            return 3;
+        }
+        return 0;
+    }
+    function isCollsionWithRect(x1, y1, w1, h1, x2, y2, w2, h2) {
+        // 矩形A位于矩形B的右侧
+        if (x1 >= x2 && x1 >= x2 + w2) {
+            return false;
+            // 矩形A位于矩形B的左侧
+        } else if (x1 <= x2 && x1 + w1 <= x2) {
+            return false;
+            // 矩形A位于矩形B的下侧
+        } else if (y1 >= y2 && y1 >= y2 + h2) {
+            return false;
+            // 矩形A位于矩形B的上侧
+        } else if (y1 <= y2 && y1 + h1 <= y2) {
+            return false;
+        }
+        // 不相交都不满足，那就是相交了
+        return true;
+    }
+
+
+
+
+</script>
+</body>
+</html>

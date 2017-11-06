@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>背景移动&勇者移动</title>
+    <script src="js/jquery-1.8.3.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+    </style>
+
+</head>
+<body>
+<canvas id="background" width="600" height="500">
+    Your browser does not support canvas. Please try again with a different browser.
+</canvas>
+<canvas id="me" width="600" height="500">
+
+</canvas>
+<p></p>
+<script>
+    var canvas = document.getElementById("background");
+    var context2D = canvas.getContext("2d");
+    var pic = new Image();
+    pic.src = "imgs/background.png";
+    //注意目录结构，这里是把图片和html放在一个目录的
+    //注意下面方法中画笔状态的保护，这在很多情况下都会使用到
+    var x=0,i=5;
+    function draw(c) {
+        context2D.clearRect(0, 0, 600, 500);
+        context2D.save(); //保存画笔状态
+        context2D.translate(0,5*x); //开始移动画笔
+        for(var i=0;i<c;i++){
+            context2D.drawImage(pic, 0, -500*i);
+        }
+//        context2D.drawImage(pic, 0, -700*c);
+//        context2D.drawImage(pic, 0, -450*(c));
+        x++;
+        context2D.restore(); //绘制结束以后，恢复画笔状态
+    }
+    setInterval(function () {
+        i++
+    }, 1000);
+    setInterval(function () {
+        draw(i);
+    }, 50);
+    var canvasme = document.getElementById("me");
+    var contextme2D = canvasme.getContext("2d");
+    var me = new Image();
+
+    me.src = "imgs/my.gif";
+    var y=0;
+    function draw2() {
+        contextme2D.clearRect(0, 0, 600, 500);
+        contextme2D.save(); //保存画笔状态
+        contextme2D.translate(0,0); //开始移动画笔
+        contextme2D.drawImage(me, 0,0,40,46,hero.x,hero.y,40,46);
+        contextme2D.restore(); //绘制结束以后，恢复画笔状态
+        y++;
+    }
+    var hero = {
+        speed: 10, // 每秒移动的像素
+        x: 300,//初始x坐标
+        y: 450//初始y坐标
+    };
+    function Go() {
+        update();
+        draw2();//重绘屏幕
+    }
+
+    setInterval(Go, 50);
+    var keysDown = {};
+
+    addEventListener("keydown", function (e) {
+        keysDown[e.keyCode] = true;
+    }, false);
+
+    addEventListener("keyup", function (e) {
+        delete keysDown[e.keyCode];
+    }, false);
+
+    function update() {
+        if (38 in keysDown) { // 用户按的是↑
+            hero.y -= hero.speed;
+        }
+        if (40 in keysDown) { // 用户按的是↓
+            hero.y += hero.speed;
+        }
+        if (37 in keysDown) { // 用户按的是←
+            hero.x -= hero.speed;
+        }
+        if (39 in keysDown) { // 用户按的是→
+            hero.x += hero.speed;
+        }
+    }
+
+</script>
+</body>
+</html>

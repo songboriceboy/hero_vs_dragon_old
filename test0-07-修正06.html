@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>各种子弹2</title>
+    <script src="js/jquery-1.8.3.js"></script>
+    <style>
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+        }
+    </style>
+
+</head>
+<body>
+<canvas id="background" width="600" height="700">
+    Your browser does not support canvas. Please try again with a different browser.
+</canvas>
+<canvas id="me" width="600" height="700">
+
+</canvas>
+<canvas id="hb" width="600" height="700">
+
+</canvas>
+<p></p>
+<script>
+    var canvas = document.getElementById("background");
+    var context2D = canvas.getContext("2d");
+    var canvasme = document.getElementById("me");
+    var contextme2D = canvasme.getContext("2d");
+    var cvsheroball = document.getElementById("hb");
+    var contexthb2D = cvsheroball.getContext("2d");
+    var pic = new Image();
+    pic.src = "imgs/background.png";
+    var x=0,i=5;var timer=[];
+    function draw(c) {
+        context2D.clearRect(0, 0, 600, 700);
+        context2D.save();
+        context2D.translate(0,5*x);
+        for(var i=0;i<c;i++){
+            context2D.drawImage(pic, 0, -500*i);
+        }
+        x++;
+        context2D.restore();
+    }
+    setInterval(function () {i++}, 1000);
+    setInterval(function () {draw(i);}, 50);
+    var me = new Image();
+    me.src = "imgs/my.gif";
+    var boss = new Image();
+    boss.src = "imgs/enemyBoss.gif";
+    var y=0;
+    function draw2() {
+        contextme2D.clearRect(0, 0, 600, 700);
+        contextme2D.save(); //保存画笔状态
+        contextme2D.translate(0,0); //开始移动画笔
+        if(hero.isLive){
+            contextme2D.drawImage(me, 0,0,40,46,hero.x,hero.y,40,46);
+        }
+        if(dragon.isLive){
+            contextme2D.drawImage(boss, 0,0,163,154,dragon.x,dragon.y,163,154);
+        }
+        contextme2D.restore(); //绘制结束以后，恢复画笔状态
+        y++;
+    }
+
+    var dragon={
+        x:200,
+        y:50,
+        hp:500,
+        speed:2,
+        isLive:false,
+        shotHero:function(){
+        switch(Math.floor(Math.random()*6)) {
+            case 0:
+            case 1:
+            case 2:
+                var dragonBullet0 = new Bullet(this.x , this.y+150, 3, 8,0,0);
+                dragonBullet.push(dragonBullet0);
+                var c = dragonBullet[dragonBullet.length - 1];
+                var timer0 = setInterval(function () {
+                    c.run();
+                }, 30);
+                timer1.push(timer0);
+                dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+
+
+                var dragonBullet1 = new Bullet(this.x +75, this.y+150, 4, 8,0,0);
+                dragonBullet.push(dragonBullet1);
+                var d = dragonBullet[dragonBullet.length - 1];
+                timer0 = setInterval(function () {
+                    d.run();
+                }, 30);
+                timer1.push(timer0);
+                dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+
+                var dragonBullet2 = new Bullet(this.x +150, this.y+150, 5, 8,0,0);
+                dragonBullet.push(dragonBullet2);
+                var e = dragonBullet[dragonBullet.length - 1];
+                timer0 = setInterval(function () {
+                    e.run();
+                }, 30);
+                timer1.push(timer0);
+                dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+              break;
+            case 3:
+            case 4:
+                var dragonBullet3 = new Bullet(this.x+75, this.y + 150, 6, 8,hero.x,hero.y);
+                dragonBullet.push(dragonBullet3);
+                var f = dragonBullet[dragonBullet.length - 1];
+                timer0 = setInterval(function () {
+                    f.run();
+                }, 30);
+                timer1.push(timer0);
+                dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+                break;
+            case 5:
+                var dragonBullet4 = new Bullet(this.x+75, this.y + 150, 9, 8,hero.x,hero.y);
+                dragonBullet.push(dragonBullet4);
+                var g = dragonBullet[dragonBullet.length - 1];
+                timer0 = setInterval(function () {
+                    g.run();
+                }, 30);
+                timer1.push(timer0);
+                dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+                break;
+            }
+
+        }
+
+    };
+    var timer1=[];var dragonBullet=[];
+    function mboss(x,y,hp,speed){
+        this.x=x;
+        this.y=y;
+        this.hp=hp;
+        this.speed=speed;
+        var shotHero=function(){
+            switch(Math.floor(Math.random()*3)) {
+                case 0:
+                    var dragonBullet0 = new Bullet(this.x, this.y, 7, 8,0,0);
+                    dragonBullet.push(dragonBullet0);
+                    var c = dragonBullet[dragonBullet.length - 1];
+                    var timer0 = setInterval(function () {
+                        c.run();
+                    }, 30);
+                    timer1.push(timer0);
+                    dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+                    break;
+                case 1: //右
+                    var dragonBullet3 = new Bullet(this.x, this.y , 8, 8,0,0);
+                    dragonBullet.push(dragonBullet2);
+                    var f = dragonBullet[dragonBullet.length - 1];
+                    timer0 = setInterval(function () {
+                        f.run();
+                    }, 30);
+                    timer1.push(timer0);
+                    dragonBullet[dragonBullet.length - 1].timer = timer1[timer1.length - 1];
+                    break;
+
+
+
+                }
+             };
+        }
+    var hero = {
+        speed: 4, // 每秒移动的像素
+        x: 300,//初始x坐标
+        y: 650,//初始y坐标
+        direct:0,
+        hp:100,
+        isLive:true,
+        shotEnemy:function(){
+
+        switch(this.direct){
+            case 0:
+                var heroBullet0=new Bullet(this.x+4.5,this.y,this.direct,8,0,0);
+                    heroBullet.push(heroBullet0);
+                var c=heroBullet[heroBullet.length-1];
+
+                var timer0=setInterval(function () {
+                    c.run();
+                },30);
+                timer.push(timer0);
+                heroBullet[heroBullet.length-1].timer=timer[timer.length-1];
+                var heroBullet1=new Bullet(this.x-9,this.y,1,8,0,0);
+                heroBullet.push(heroBullet1);
+                var d=heroBullet[heroBullet.length-1];
+
+                timer0=setInterval(function () {
+                    d.run();
+                },30);
+                timer.push(timer0);
+                heroBullet[heroBullet.length-1].timer=timer[timer.length-1];
+                var heroBullet2=new Bullet(this.x+12,this.y,2,8,0,0);
+                heroBullet.push(heroBullet2);
+                var e=heroBullet[heroBullet.length-1];
+
+                timer0=setInterval(function () {
+                    e.run();
+                },30);
+                timer.push(timer0);
+                heroBullet[heroBullet.length-1].timer=timer[timer.length-1];
+                break;
+            case 3: //右
+                var heroBullet3=new Bullet(this.x,this.y+100,6,8,0,0);
+                break;
+            }
+
+        }
+    };
+    function Go() {
+        update(isCollsionWithTRBL(hero.x,hero.y,40,46,0,600,700,0));
+        draw2();//重绘屏幕
+    }
+    setInterval(Go, 20);
+    var keysDown = {};
+    addEventListener("keydown", function (e) {
+        keysDown[e.keyCode] = true;
+    }, false);
+    addEventListener("keyup", function (e) {
+        delete keysDown[e.keyCode];
+    }, false);
+    function update(c) {
+        if (c!=1&&38 in keysDown) { // 用户按的是↑
+            hero.y -= hero.speed;
+        }
+        if (c!=3&&40 in keysDown) { // 用户按的是↓
+            hero.y += hero.speed;
+        }
+        if (c!=4&&37 in keysDown) { // 用户按的是←
+            hero.x -= hero.speed;
+        }
+        if (c!=2&&39 in keysDown) { // 用户按的是→
+            hero.x += hero.speed;
+        }
+
+    }
+    $(function () {
+        setInterval(flashTankMap,20);
+        setInterval(dragonMoveImp,1000);
+        setTimeout(function () {
+            dragon.isLive=true;
+        },1000)
+    });
+    var shottime=0;
+    $(document).keydown(function(event){
+        if(hero.isLive&&event.keyCode == 17){
+            hero.shotEnemy();
+        }
+        if(event.keyCode == 32){
+            dragon.shotHero();
+        }
+    });
+    var dragonMoveTime=0,dragonshoot=0;
+    function dragonMoveImp() {
+        clearInterval(dragonMoveTime);
+        clearInterval(dragonshoot);
+        var dm=Math.floor(Math.random()*8);
+        dragonMoveTime=setInterval(function () {
+            dragonMove(dm);
+        },20);
+        if(dragon.isLive)
+        dragonshoot=setInterval(function () {
+            dragon.shotHero();
+        },200);
+    }
+    function dragonMove(dm) {
+//        if(isCollsionWithTRBL(dragon.x, dragon.y, 163, 154, 0, 600, 700, 0))
+        switch(dm){
+            case 0:
+                if(dragon.y>=0)
+                dragon.y -= dragon.speed;
+                break;
+            case 1:
+                if(dragon.y>=0&&dragon.x<=600-163){
+                    dragon.y -= dragon.speed;
+                    dragon.x += dragon.speed;
+                }
+                break;
+            case 2:
+                if(dragon.x<=600-163)
+                dragon.x += dragon.speed;
+                break;
+            case 3:
+                if(dragon.y<=400-154&&dragon.x<=600-163){
+                    dragon.y += dragon.speed;
+                    dragon.x += dragon.speed;
+                }
+                break;
+            case 4:
+                if(dragon.y<=400-154)
+                dragon.y += dragon.speed;
+                break;
+            case 5:
+                if(dragon.y<=400-154&&dragon.x>=0){
+                    dragon.y += dragon.speed;
+                    dragon.x -= dragon.speed;
+                }
+                break;
+            case 6:
+                if(dragon.x>=0)
+                dragon.x -= dragon.speed;
+                break;
+            case 7:
+                if(dragon.y>=0&&dragon.x>=0) {
+                    dragon.y -= dragon.speed;
+                    dragon.x -= dragon.speed;
+                }
+                break;
+        }
+    }
+    function flashTankMap(){
+        //把画布清理
+        contexthb2D.clearRect(0,0,600,700);
+        //画出自己的子弹
+        drawHeroBullet();
+        //画出boss的子弹
+        drawDragonBullet();
+        if(dragon.hp<=0)dragon.isLive=false;
+        if(hero.hp<=0)hero.isLive=false;
+    }
+    var heroBullet=[];
+    function Bullet(x,y,direct,speed,hx,hy){
+        this.x=x;
+        this.y=y;
+        this.hx=hx;
+        this.hy=hy;
+        this.booly=hy-y>=0;
+        this.direct=direct;
+        this.speed=speed;
+        this.timer=null;
+        this.isLive=true;
+        this.run=function run(){
+            //在该表这个子弹的坐标时，我们先判断子弹是否已经到边界
+            if(this.x<=0||this.x>=600||this.y<=0||this.y>=700){
+                //子弹要停止.
+                window.clearInterval(this.timer);
+                //子弹死亡
+                this.isLive=false;
+            }else{
+                switch(this.direct){
+                    case 0:
+                        this.y-=this.speed;
+                        break;
+                    case 1:
+                        this.y-=this.speed;
+                        this.x-=0.5*this.speed;
+                        break;
+                    case 2:
+                        this.y-=this.speed;
+                        this.x+=0.5*this.speed;
+                        break;
+                    case 3:
+                        this.y+=this.speed;
+                        this.x-=0.5*this.speed;
+                        break;
+                    case 4:
+                        this.y+=this.speed;
+                        break;
+                    case 5:
+                        this.y+=this.speed;
+                        this.x+=0.5*this.speed;
+                        break;
+//                    case 6:
+//                        this.y+=this.speed*2;
+//                        break;
+                    case 6:
+                        var t=Math.atan((this.hx+20-this.x)/(this.hy+23-this.y));
+                        if(!this.booly){
+                            this.y-=this.speed*0.65*Math.cos(t);
+                            this.x-=this.speed*0.65*Math.sin(t);
+                        }else{
+                            this.x+=this.speed*0.65*Math.sin(t);
+                            this.y+=this.speed*0.65*Math.cos(t);
+                        }
+                        break;
+                    case 7:
+                        this.y+=this.speed*2;
+                        break;
+                    case 8:
+                        this.y+=this.speed*2;
+                        break;
+                    case 9:
+                        t=Math.atan((this.hx+20-this.x)/(this.hy+23-this.y));
+
+//
+                            if(!this.booly){
+                                this.y-=this.speed*1.5*Math.cos(t);
+                                this.x-=this.speed*1.5*Math.sin(t);
+                            }else{
+                                this.x+=this.speed*1.5*Math.sin(t);
+                                this.y+=this.speed*1.5*Math.cos(t);
+                            }
+
+
+                        break;
+                }
+            }
+        }
+    }
+    var hb = new Image();
+    hb.src = "imgs/missileH_U.gif";
+    var hb1 = new Image();
+    hb1.src = "imgs/missileH_LUU.gif";
+    var hb2 = new Image();
+    hb2.src = "imgs/missileH_RUU.gif";
+    var db = new Image();
+    db.src = "imgs/missile1_D.gif";
+    var db2 = new Image();
+    db2.src = "imgs/missile2_LU.gif";
+    var db3 = new Image();
+    db3.src = "imgs/missile3_D.gif";
+    function drawDragonBullet() {
+        for(var i=0;i<dragonBullet.length;i++){
+
+            if(hero.isLive&&isCollsionWithRect(dragonBullet[i].x,dragonBullet[i].y,20,20,hero.x,hero.y,40,46)&&dragonBullet[i].direct!=9&&dragonBullet[i].direct!=6)
+            {
+                dragonBullet[i].isLive=false;hero.hp-=5;
+            }else if(hero.isLive&&isCollsionWithRect(dragonBullet[i].x,dragonBullet[i].y,20,20,hero.x,hero.y,40,46)&&dragonBullet[i].direct==9){
+                dragonBullet[i].isLive=false;dragon.hp+=50;
+            }else if(hero.isLive&&isCollsionWithRect(dragonBullet[i].x,dragonBullet[i].y,20,20,hero.x,hero.y,40,46)&&dragonBullet[i].direct==6){
+                dragonBullet[i].isLive=false;hero.hp-=10;
+            }
+            if(dragonBullet[i].isLive&&dragonBullet[i].direct!=6&&dragonBullet[i].direct!=9){
+                contexthb2D.drawImage(db,dragonBullet[i].x,dragonBullet[i].y);
+            }else if(dragonBullet[i].isLive&&dragonBullet[i].direct==6){
+                contexthb2D.drawImage(db3,dragonBullet[i].x,dragonBullet[i].y);
+            }else if(dragonBullet[i].isLive&&dragonBullet[i].direct==9){
+                contexthb2D.drawImage(db2,dragonBullet[i].x,dragonBullet[i].y);
+            }
+            else{
+                dragonBullet.splice(i,1);
+                timer1.splice(i,1);
+            }
+        }
+    }
+    function drawHeroBullet(){
+        {
+            for(var i=0;i<heroBullet.length;i++){
+                if(dragon.isLive&&isCollsionWithRect(heroBullet[i].x,heroBullet[i].y,29,28,dragon.x,dragon.y,163,154))
+                {
+                    heroBullet[i].isLive=false;dragon.hp-=20;
+                }
+                if(heroBullet[i].isLive&&heroBullet[i].direct==0)
+                {
+                    contexthb2D.drawImage(hb,heroBullet[i].x,heroBullet[i].y);
+                }
+                else if(heroBullet[i].isLive&&heroBullet[i].direct==1)
+                {
+                    contexthb2D.drawImage(hb1,heroBullet[i].x,heroBullet[i].y);
+                }
+                else if(heroBullet[i].isLive&&heroBullet[i].direct==2)
+                {
+                    contexthb2D.drawImage(hb2,heroBullet[i].x,heroBullet[i].y);
+                }
+                else
+                {
+                    heroBullet.splice(i,1);
+                    timer.splice(i,1);
+                }
+            }
+
+        }
+
+    }
+    function isCollsionWithTRBL(x, y, width, height, top, right, bottom, left) {
+        if (x <=left) {
+            return 4;
+        } else if (y<=top) {
+            return 1;
+        } else if (x+width>=right) {
+            return 2;
+        } else if (y+height>bottom) {
+            return 3;
+        }
+        return 0;
+    }
+    function isCollsionWithRect(x1, y1, w1, h1, x2, y2, w2, h2) {
+        // 矩形A位于矩形B的右侧
+        if (x1 >= x2 && x1 >= x2 + w2) {
+            return false;
+            // 矩形A位于矩形B的左侧
+        } else if (x1 <= x2 && x1 + w1 <= x2) {
+            return false;
+            // 矩形A位于矩形B的下侧
+        } else if (y1 >= y2 && y1 >= y2 + h2) {
+            return false;
+            // 矩形A位于矩形B的上侧
+        } else if (y1 <= y2 && y1 + h1 <= y2) {
+            return false;
+        }
+        // 不相交都不满足，那就是相交了
+        return true;
+    }
+
+
+
+
+</script>
+</body>
+</html>
